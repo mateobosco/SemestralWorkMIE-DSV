@@ -16,6 +16,7 @@ public class Server {
 		try {
 			SharedMemory<?> sh = new ShMemoryImpl<Object>();
 			
+			@SuppressWarnings("unchecked")
 			SharedMemory<?> stub = (SharedMemory<Object>) UnicastRemoteObject.exportObject(sh, 50000);
 			
 			Registry registry = LocateRegistry.createRegistry(2010);

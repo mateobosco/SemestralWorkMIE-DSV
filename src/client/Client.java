@@ -3,7 +3,6 @@ package client;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-import server.ShMemoryImpl;
 import shmemory.SharedMemory;
 
 
@@ -12,9 +11,11 @@ public class Client {
 		try {
 			String name = "ShMemory";
 			Registry registry = LocateRegistry.getRegistry("127.0.0.1", 2010);
+			@SuppressWarnings("unchecked")
 			SharedMemory<Integer> shMemory = (SharedMemory<Integer>) registry.lookup(name);
-			System.out.println("Client: " + shMemory.write(2));
-			System.out.println("Client: " + shMemory.read());
+			int id = shMemory.login();
+			System.out.println("Client: " + shMemory.write(id, 2));
+			System.out.println("Client: " + shMemory.read(id));
 		}
 		catch (Exception e) {
 			System.err.println("Exception: " + e.toString());

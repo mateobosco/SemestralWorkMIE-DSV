@@ -5,8 +5,8 @@ import java.rmi.RemoteException;
 
 public interface SharedMemory<Type> extends Remote{
 	
-	public Type read() throws RemoteException;
-	public boolean write(Type t) throws RemoteException;
-	//public boolean login() throws RemoteException;
-	//public boolean logout() throws RemoteExpcetion;
+	public Type read(int id) throws RemoteException;
+	public boolean write(int id, Type t) throws RemoteException;
+	public int login() throws RemoteException;
+	public boolean logout(int id) throws RemoteException;
 }
