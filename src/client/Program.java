@@ -1,31 +1,23 @@
 package client;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.Scanner;
+import java.util.List;
+
+import chat.Message;
 
 public class Program {
-	
-	
 	
 	public static void main(String args[]) {
 		
 		interactive();
-		
-		/*Client<Integer> c = new Client<Integer>();
-		c.connect();
-		
-		try {
-			System.out.println("Client: " + c.write(2));
-			System.out.println("Client: " + c.read());
-		}
-		catch (Exception e) {
-			System.err.println("Exception: " + e.toString());
-		}*/
 	}
 	
 	static void interactive(){
-		Client<Integer> c = new Client<Integer>();
+		final Client c = new Client();
 		try {
 			c.connect();
 		} catch (RemoteException | NotBoundException e1) {
@@ -33,32 +25,69 @@ public class Program {
 			return;
 		}
 		while (true){
-			System.out.println("1 - Read value");
-			System.out.println("2 - Write value");
-			System.out.println("3 - Exit");
-			System.out.print("Select the desired option: ");
-			Scanner in = new Scanner(System.in);
-			int num = in.nextInt();
-			try{
-				if (num == 1){
-					System.out.println("The value is " + c.read());
+			receiveMessages(c);
+			getMessage(c);
+		}
+	}
+
+	private static void receiveMessages(final Client c) {
+		Thread one = new Thread() {
+		    public void run() {
+		    	int lastMessage = 0;
+		        for (int i = 0 ; i < 100 ; i++){
+		        	try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+		        	try {
+						List<Message> messages = c.receive(lastMessage);
+						showMessages(messages);
+						lastMessage += messages.size();
+					} catch (RemoteException e) {
+						e.printStackTrace();
+					}
 				}
-				else if (num == 2){
-					System.out.print("Enter the desired value: ");
-					num = in.nextInt();
-					if (c.write(num)) System.out.println("The value was successfully written");
-					else System.out.println("There was an error writing the value");
-				}
-				else if (num == 3){
-					c.exit();
-					System.out.println("Goodbye");
-					return;
-				}
-			}catch(RemoteException e){
+		    }  
+		};
+		one.start();
+	}
+
+	protected static void showMessages(List<Message> messages) {
+		for(int i = 0; i < messages.size(); i++){
+			Message m = messages.get(i);
+			System.out.print(m.getBody());
+		}
+	}
+
+	private static void getMessage(Client c) {
+		String input = getString();
+		while (input != "exit"){
+			try {
+				c.send(input);
+			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
-			System.out.println("---------------------------------------------");
+			input = getString();
 		}
+		c.exit();
+	}
+	
+	private static String getString(){
+		System.out.print("Message: ");
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		
+		String input;
+			
+		try {
+			while((input=br.readLine())!=null){
+				return input;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 
 }

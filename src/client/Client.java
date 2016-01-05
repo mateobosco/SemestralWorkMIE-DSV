@@ -4,37 +4,39 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.List;
 
-import shmemory.SharedMemory;
+import chat.ChatServer;
+import chat.Message;
 
 
-public class Client<T> {
+public class Client {
 	
 	private int id;
-	private SharedMemory<T> shMemory;
+	private ChatServer chatServer;
 	
 	public Client() { }
 	
-	@SuppressWarnings("unchecked")
 	public void connect() throws RemoteException, NotBoundException{
-		String name = "ShMemory";
+		String name = "ChatServer";
 		Registry registry;
 		registry = LocateRegistry.getRegistry("127.0.0.1", 2010);
-		shMemory = (SharedMemory<T>) registry.lookup(name);
-		id = shMemory.login();
+		chatServer = (ChatServer) registry.lookup(name);
+		id = chatServer.login();
 	}
 	
-	public T read() throws RemoteException{
-		return shMemory.read(id);
+	public boolean send(String input) throws RemoteException{
+		Message m = new Message(id, input);
+		return chatServer.send(m);
 	}
 	
-	public boolean write(T value) throws RemoteException{
-		return shMemory.write(id, value);
+	public List<Message> receive(int from) throws RemoteException{
+		return chatServer.receive(id, from);
 	}
 	
 	public void exit(){
 		try {
-			shMemory.logout(id);
+			chatServer.logout(id);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}

@@ -4,23 +4,21 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
-import shmemory.SharedMemory;
-
+import chat.ChatServer;
 
 public class Server {
 	
 	public static void main(String[] args) {
-		String name = "ShMemory";
-		String name2 = "ShMemory2";
+		String name = "ChatServer";
+		String name2 = "ChatServer2";
 		
 		try {
-			SharedMemory<?> sh = new ShMemoryImpl<Object>();
+			ChatServerImpl chatServer = new ChatServerImpl();
 			
-			@SuppressWarnings("unchecked")
-			SharedMemory<?> stub = (SharedMemory<Object>) UnicastRemoteObject.exportObject(sh, 50000);
+			ChatServer stub = (ChatServer) UnicastRemoteObject.exportObject(chatServer, 50000);
 			
 			Registry registry = LocateRegistry.createRegistry(2010);
-			registry.rebind(name, sh);
+			registry.rebind(name, chatServer);
 			registry.rebind(name2, stub);
 		}
 		catch (Exception e) {
