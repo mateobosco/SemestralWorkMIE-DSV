@@ -60,7 +60,7 @@ public class ChatGUI extends JFrame implements WindowListener, MouseListener, Ke
 			e.printStackTrace();
 		}
 		Thread messageReceiver = new Thread(new MessageReceiver(this.client,this.messageArea));
-		messageReceiver.run();
+		messageReceiver.start();
 	}
 	
 	public void enterText(){

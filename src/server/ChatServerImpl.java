@@ -4,7 +4,10 @@ import java.rmi.RemoteException;
 import java.util.Vector;
 
 import chat.ChatServer;
+import chat.LogicalClock;
+import chat.LoginResponse;
 import chat.Message;
+import chat.ServerResponse;
 
 public class ChatServerImpl implements ChatServer{
 
@@ -18,23 +21,26 @@ public class ChatServerImpl implements ChatServer{
 		idCounter = 0;
 		lamport = new Lamport();
 		messageVector = new Vector<Message>();
+		LogicalClock.getInstance().increment();
 	}
 
-	public boolean send(Message m) throws RemoteException {
+	public int send(Message m) throws RemoteException {
 		lamport.lock(nClients, m.getFrom());
 		
 		int len = messageVector.size();
 		m.setId(len);
 		messageVector.add(m);
+		LogicalClock.getInstance().increment(m.getLogicalTime());
 		
 		System.out.println(m.getBody());
 		
 		lamport.unlock(m.getFrom());
-		return true;
+		return LogicalClock.getInstance().getTime();
 	}
 
-	public Vector<Message> receive(int id, int idLastMessage) throws RemoteException {
+	public ServerResponse receive(int id, int idLastMessage, int logicalTime) throws RemoteException {
 		lamport.lock(nClients, id);	
+		LogicalClock.getInstance().increment(logicalTime);
 		Vector<Message> sublist;
 		if (idLastMessage == 0){
 			sublist = this.messageVector;
@@ -44,23 +50,27 @@ public class ChatServerImpl implements ChatServer{
 		}else{
 			sublist = new Vector<Message>();
 		}
+		LogicalClock.getInstance().increment();
+		ServerResponse response = new ServerResponse(sublist, LogicalClock.getInstance().getTime());
+		lamport.unlock(id);	
 		
-		
-		lamport.unlock(id);		
-		
-		return sublist;
+		return response;
 	}
 
-	public int login() throws RemoteException {
+	public LoginResponse login(int logicalTime) throws RemoteException {
+		LogicalClock.getInstance().increment(logicalTime);
 		nClients ++;
 		idCounter ++;
-		return idCounter;
+		LoginResponse response = new LoginResponse(idCounter);
+		
+		return response;
 	}
 
-	public boolean logout(int id) throws RemoteException {
+	public int logout(int id, int logicalTime) throws RemoteException {
+		LogicalClock.getInstance().increment(logicalTime);
 		nClients --;
 		lamport.unlock(id);
-		return true;
+		return LogicalClock.getInstance().getTime();
 	}
 	
 }

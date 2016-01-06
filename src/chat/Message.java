@@ -14,12 +14,14 @@ public class Message implements Serializable {
 	private String username;
 	private Date date;
 	private int id;
+	private int logicalTime;
 	
 	public Message(int from, String username, String body){
 		this.from = from;
 		this.username = username;
 		this.body = body;
 		this.date = new Date();
+		this.logicalTime = LogicalClock.getInstance().getTime();
 	}
 	
 	public int getFrom(){
@@ -44,5 +46,9 @@ public class Message implements Serializable {
 	
 	public int getId(){
 		return this.id;
+	}
+	
+	public int getLogicalTime(){
+		return this.logicalTime;
 	}
 }

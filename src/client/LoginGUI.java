@@ -56,8 +56,9 @@ public class LoginGUI extends JFrame implements WindowListener, KeyListener, Mou
 	private void enterText() {
 		String username = this.loginArea.getText();
 		if (username.length() > 1){
-			new ChatGUI(username);
 			this.setVisible(false);
+			new ChatGUI(username);
+			
 		}
 	}
 	

@@ -2,12 +2,11 @@ package chat;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.Vector;
 
 public interface ChatServer extends Remote{
 	
-	public boolean send(Message m) throws RemoteException;
-	public Vector<Message> receive(int id, int from) throws RemoteException;
-	public int login() throws RemoteException;
-	public boolean logout(int id) throws RemoteException;
+	public int send(Message m) throws RemoteException;
+	public ServerResponse receive(int id, int from, int logicalTime) throws RemoteException;
+	public LoginResponse login(int logicalTime) throws RemoteException;
+	public int logout(int id, int logicalTime) throws RemoteException;
 }
