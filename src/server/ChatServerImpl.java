@@ -39,8 +39,8 @@ public class ChatServerImpl implements ChatServer{
 		if (idLastMessage == 0){
 			sublist = this.messageVector;
 		}
-		else if (idLastMessage < this.messageVector.size()){
-			sublist = new Vector<Message>(this.messageVector.subList(idLastMessage, this.messageVector.size()-1));
+		else if (idLastMessage < this.messageVector.size() || idLastMessage >= 0){
+			sublist = new Vector<Message>(this.messageVector.subList(idLastMessage, this.messageVector.size()));
 		}else{
 			sublist = new Vector<Message>();
 		}

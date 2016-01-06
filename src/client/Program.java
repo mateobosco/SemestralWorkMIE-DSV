@@ -17,7 +17,7 @@ public class Program {
 	}
 	
 	static void interactive(){
-		final Client c = new Client();
+		final Client c = new Client("pepe");
 		try {
 			c.connect();
 		} catch (RemoteException | NotBoundException e1) {

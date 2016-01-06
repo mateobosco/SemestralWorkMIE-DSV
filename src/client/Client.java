@@ -14,8 +14,11 @@ public class Client {
 	
 	private int id;
 	private ChatServer chatServer;
+	private String username;
 	
-	public Client() { }
+	public Client(String username) {
+		this.username = username;
+	}
 	
 	public void connect() throws RemoteException, NotBoundException{
 		String name = "ChatServer";
@@ -26,7 +29,7 @@ public class Client {
 	}
 	
 	public boolean send(String input) throws RemoteException{
-		Message m = new Message(id, input);
+		Message m = new Message(this.id, this.username, input);
 		return chatServer.send(m);
 	}
 	

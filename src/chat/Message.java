@@ -11,17 +11,23 @@ public class Message implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private int from;
 	private String body;
+	private String username;
 	private Date date;
 	private int id;
 	
-	public Message(int from, String body){
+	public Message(int from, String username, String body){
 		this.from = from;
+		this.username = username;
 		this.body = body;
 		this.date = new Date();
 	}
 	
 	public int getFrom(){
 		return this.from;
+	}
+	
+	public String getUsername(){
+		return this.username;
 	}
 	
 	public String getBody(){
