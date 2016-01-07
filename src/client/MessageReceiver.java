@@ -1,7 +1,6 @@
 package client;
 
 import java.awt.TextArea;
-import java.rmi.RemoteException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,6 +22,7 @@ public class MessageReceiver implements Runnable{
 	public void run() {
 		while (true){
 			try {
+				Thread.sleep(100);
 				List<Message> messages = this.client.receive(lastMessage);
 				if (messages == null) return;
 				
@@ -32,7 +32,7 @@ public class MessageReceiver implements Runnable{
 					this.messageArea.append(m.getUsername() + "> " + m.getBody() + "\n" );
 				}
 				this.lastMessage += messages.size();
-			} catch (RemoteException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}		

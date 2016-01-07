@@ -26,6 +26,11 @@ public class ChatGUI extends JFrame implements WindowListener, MouseListener, Ke
 		this.setResizable(true);
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.addWindowListener(new java.awt.event.WindowAdapter() {
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		        client.exit();
+		    }
+		});
 		
 		this.messageArea = new TextArea();
 		this.messageArea.setEditable(false);
