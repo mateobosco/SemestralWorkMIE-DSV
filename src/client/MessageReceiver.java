@@ -29,7 +29,9 @@ public class MessageReceiver implements Runnable{
 				Iterator<Message> i = messages.iterator();
 				while (i.hasNext()){
 					Message m = i.next();
-					this.messageArea.append(m.getUsername() + "> " + m.getBody() + "\n" );
+					@SuppressWarnings("deprecation")
+					String time = m.getDate().getHours() + ":" + m.getDate().getMinutes();
+					this.messageArea.append(m.getUsername() + " (" + time + ")> " + m.getBody() + "\n" );
 				}
 				this.lastMessage += messages.size();
 			} catch (Exception e) {
