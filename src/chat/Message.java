@@ -15,6 +15,7 @@ public class Message implements Serializable {
 	private Date date;
 	private int id;
 	private int logicalTime;
+	private boolean connection;
 	
 	public Message(int from, String username, String body){
 		this.from = from;
@@ -22,6 +23,7 @@ public class Message implements Serializable {
 		this.body = body;
 		this.date = new Date();
 		this.logicalTime = LogicalClock.getInstance().getTime();
+		this.connection = false;
 	}
 	
 	public int getFrom(){
@@ -50,5 +52,13 @@ public class Message implements Serializable {
 	
 	public int getLogicalTime(){
 		return this.logicalTime;
+	}
+	
+	public boolean isConnection(){
+		return this.connection;
+	}
+	
+	public void setConnection(boolean c){
+		this.connection = c;
 	}
 }

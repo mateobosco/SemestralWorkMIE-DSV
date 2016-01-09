@@ -36,7 +36,7 @@ public class Client {
 		registry = LocateRegistry.getRegistry("127.0.0.1", 2010);
 		this.chatServer = (ChatServer) registry.lookup(name);
 		
-		LoginResponse response = chatServer.login(LogicalClock.getInstance().getTime());
+		LoginResponse response = chatServer.login(LogicalClock.getInstance().getTime(), this.username);
 		this.id = response.getId();
 		LogicalClock.getInstance().increment(response.getLogicalTime());
 		logger.logClient("Connected", this.id);
@@ -66,7 +66,7 @@ public class Client {
 		LogicalClock.getInstance().increment();
 		logger.logClient("Disconnecting", this.id);
 		try {
-			int logicalTime = chatServer.logout(id, LogicalClock.getInstance().getTime());
+			int logicalTime = chatServer.logout(id, LogicalClock.getInstance().getTime(), this.username);
 			LogicalClock.getInstance().increment(logicalTime);
 		} catch (RemoteException e) {
 			e.printStackTrace();

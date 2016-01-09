@@ -36,9 +36,7 @@ public class ChatServerImpl implements ChatServer{
 		messageVector.add(m);
 		LogicalClock.getInstance().increment(m.getLogicalTime());
 		logger.logServer("Message received from client" + m.getFrom() );
-		
-		System.out.println(m.getBody());
-		
+				
 		lamport.unlock(m.getFrom());
 		return LogicalClock.getInstance().getTime();
 	}
@@ -52,12 +50,7 @@ public class ChatServerImpl implements ChatServer{
 			sublist = this.messageVector;
 		}
 		else if (idLastMessage < this.messageVector.size() || idLastMessage >= 0){
-			Vector<Message> sub = new Vector<Message>(this.messageVector.subList(idLastMessage, this.messageVector.size()));
-			sublist = new Vector<Message>();
-			int size = sub.size();
-			for (int i = 0; i < size; i ++){
-				sublist.add(sub.get(i));
-			}
+			sublist = new Vector<Message>(this.messageVector.subList(idLastMessage, this.messageVector.size()));
 		}else{
 			sublist = new Vector<Message>();
 		}
@@ -69,7 +62,7 @@ public class ChatServerImpl implements ChatServer{
 		return response;
 	}
 
-	public LoginResponse login(int logicalTime) throws RemoteException {
+	public LoginResponse login(int logicalTime, String username) throws RemoteException {
 		LogicalClock.getInstance().increment(logicalTime);
 		logger.logServer("Login requested from client");
 		nClients += 2;
@@ -77,16 +70,34 @@ public class ChatServerImpl implements ChatServer{
 		LoginResponse response = new LoginResponse(idCounter);
 		logger.logServer("Login request replied to client new number " + idCounter);
 		
+		this.addConnectionMessage(false, idCounter, username);
 		return response;
 	}
 
-	public int logout(int id, int logicalTime) throws RemoteException {
+	public int logout(int id, int logicalTime, String username) throws RemoteException {
 		LogicalClock.getInstance().increment(logicalTime);
 		logger.logServer("Logout request from client" + id);
 		nClients -= 2;
 		lamport.unlock(id);
 		logger.logServer("Logout request replied to client" + id);
+		this.addConnectionMessage(false, id, username);
 		return LogicalClock.getInstance().getTime();
+	}
+	
+	private void addConnectionMessage(boolean connection, int clientId, String username){
+		lamport.lock(nClients, 0);
+		String tail;
+		if (connection) tail = " is connected";
+		else tail = " is disconnected";
+		
+		Message m = new Message(0, "", username + tail);
+		int len = messageVector.size();
+		m.setId(len);
+		m.setConnection(true);
+		messageVector.add(m);
+		
+		
+		lamport.unlock(0);
 	}
 	
 }
