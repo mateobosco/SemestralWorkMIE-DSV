@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Lamport{
-    ArrayList<Integer> ticket;
-	ArrayList<Boolean> entering;
+    private volatile ArrayList<Integer> ticket;
+	private volatile ArrayList<Boolean> entering;
+	private volatile boolean ocupied;
 
     public Lamport() { 
     	ticket = new ArrayList<Integer>(Collections.nCopies(500, 0));
@@ -32,12 +33,15 @@ public class Lamport{
     					( ticket.get(id) == ticket.get(i) && id > i))){ 
     				Thread.yield(); 
     			}
+    			while (ocupied) Thread.yield();
     		}
     	}
+    	ocupied = true;
     	
     }
     
     public void unlock(int id){
+		ocupied = false;
     	ticket.set(id, 0);
     }
 }
