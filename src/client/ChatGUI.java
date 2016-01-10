@@ -15,9 +15,6 @@ public class ChatGUI extends JFrame implements WindowListener, MouseListener, Ke
 	private TextField sendArea = null;
 	private Client client = null;
 	
-	public static void main(String[] args){
-		new ChatGUI("pepe");
-	}
 	
 	public ChatGUI(String username){
 		super("Chat");
@@ -49,10 +46,6 @@ public class ChatGUI extends JFrame implements WindowListener, MouseListener, Ke
 		Button send = new Button("Send");
 		send.addMouseListener(this);
 		p.add(send);
-		
-		Button clear = new Button("Clear");
-		//send.addMouseListener(this);
-		p.add(clear);
 		
 		this.add(p, "South");
 		this.setVisible(true);
