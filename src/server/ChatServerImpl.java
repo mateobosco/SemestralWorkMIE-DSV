@@ -70,7 +70,7 @@ public class ChatServerImpl implements ChatServer{
 		LoginResponse response = new LoginResponse(idCounter);
 		logger.logServer("Login request replied to client new number " + idCounter);
 		
-		this.addConnectionMessage(false, idCounter, username);
+		this.addConnectionMessage(true, idCounter, username);
 		return response;
 	}
 
